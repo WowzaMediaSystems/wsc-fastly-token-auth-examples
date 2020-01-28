@@ -48,41 +48,7 @@ class FastlyToken:
         self._secret = secret
         self._stream_id = stream_id
 
-#     def _parseQueryStrings(self):
-#         '''
-# Query String Parameters:
-# secret -- Secret required to generate the token.
-# stream_id -- The session identifier for single use tokens or other advanced cases.
-# end_time -- When does this token expire? end_time overrides lifetime
-# lifetime -- How long is this token valid for?
-# ip -- (Optional) IP Address to restrict this token to.
-# start_time -- (Optional) What is the start time? (Use now for the current time)
-#
-# Use + for embedded spaces in query string parameters.
-#         '''
-#         param_list = self._query_strings.split('&')
-#         for param in param_list:
-#             if '=' in param:
-#                 (key, value) = param.split('=')
-#                 if key == 'ip':
-#                     self._ip = value
-#                 elif key == 'start_time':
-#                     self._start_time = value
-#                 elif key == 'end_time':
-#                     self._end_time = value
-#                 elif key == 'lifetime':
-#                     self._lifetime = value
-#                 elif key == 'secret':
-#                     self._secret = value
-#                 elif key == 'stream_id':
-#                     self._stream_id = value
-#             elif 'escape_early' in param:
-#                 self._escape_early = True
-#             elif 'escape_early_upper' in param:
-#                 self._escape_early_upper = True
-
     def generateToken(self):
-        #print(self._start_time, self._end_time, self._stream_id, self._lifetime, self._ip, self._secret)
 
         #start by checking for Secret
         if self._secret is None or len(self._secret) <= 0:
