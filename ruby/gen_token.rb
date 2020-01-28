@@ -21,7 +21,7 @@ parser = OptionParser.new do |parser|
   Any token is tied to a specific stream id and has a limited lifetime.
   Optionally, additional parameters can be factored in, for example the
   client's IP address, or a start time denoting from when on the token is valid.
-  See below for supported values. Keep in mind that the stream target 
+  See below for supported values. Keep in mind that the stream target
   configuration has to match these optional parameters in some cases.
 
   Examples:
@@ -34,7 +34,7 @@ parser = OptionParser.new do |parser|
 
   # Generate a token that is valid from 1578935505 to 1578935593
   # seconds after 1970-01-01 00:00 UTC (Unix epoch time)
-  ./gen_token.rb -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc 
+  ./gen_token.rb -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc
   hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99
 
   )
@@ -106,7 +106,7 @@ parts << 'exp=%s' % params[:end_time]
 public_parts = parts.join('~')
 
 parts << 'stream_id=%s' % params[:stream_id]
-secret = params[:secret].gsub(/\s/, '')
+secret = Array(params[:secret].gsub(/\s/, '')).pack("H*")
 digest = OpenSSL::Digest.new('sha256')
 hmac = OpenSSL::HMAC.new(secret, digest)
 hmac.update(parts.join('~'))

@@ -3,18 +3,11 @@ APP_VERSION = '2.0.7'
 import binascii
 import hashlib
 import hmac
-#might need to use argparse
 import optparse
-import os
-import re
 import sys
 import time
-import urllib
-import time
 
-# Force the local timezone to be GMT.
-os.environ['TZ'] = 'GMT'
-time.tzset()
+
 
 class FastlyTokenError(Exception):
     def __init__(self, text):
@@ -27,7 +20,6 @@ class FastlyTokenError(Exception):
         return str(self)
     text = property(_getText, None, None,
         'Formatted error text.')
-
 
 class FastlyTokenConfig:
     def __init__(self):
@@ -100,10 +92,10 @@ class FastlyToken:
         if self._start_time is not None:
             new_token += 'st=%d~' % (self._start_time)
 
-        new_token += 'exp=%d~' % (self._end_time)
+        new_token += 'exp=%d' % (self._end_time)
 
         hash_source += new_token
-        hash_source += 'stream_id=%s' % (self._stream_id)
+        hash_source += '~stream_id=%s' % (self._stream_id)
 
         token_hmac = hmac.new(
             binascii.a2b_hex(self._secret),
