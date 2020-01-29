@@ -24,8 +24,8 @@ class FastlyTokenConfig:
         self.ip = ''
         self.start_time = None
         self.end_time = None
-        self.lifetime = 300
-        self.secret = 'aabbccddeeff00112233445566778899'
+        self.lifetime = None
+        self.secret = ''
         self.stream_id = ''
 
 class FastlyToken:
