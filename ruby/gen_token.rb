@@ -106,7 +106,7 @@ parts << 'exp=%s' % params[:end_time]
 public_parts = parts.join('~')
 
 parts << 'stream_id=%s' % params[:stream_id]
-secret = Array(params[:secret].gsub(/\s/, '')).pack("H*")
+secret = params[:secret].gsub(/\s/, '')
 digest = OpenSSL::Digest.new('sha256')
 hmac = OpenSSL::HMAC.new(secret, digest)
 hmac.update(parts.join('~'))

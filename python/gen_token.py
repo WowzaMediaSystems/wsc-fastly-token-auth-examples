@@ -1,12 +1,10 @@
 APP_VERSION = '2.0.7'
 
-import binascii
 import hashlib
 import hmac
 import optparse
 import sys
 import time
-
 
 
 class FastlyTokenError(Exception):
@@ -98,7 +96,7 @@ class FastlyToken:
         hash_source += '~stream_id=%s' % (self._stream_id)
 
         token_hmac = hmac.new(
-            binascii.a2b_hex(self._secret),
+            self._secret,
             hash_source,
             getattr(hashlib, 'sha256')).hexdigest()
 
