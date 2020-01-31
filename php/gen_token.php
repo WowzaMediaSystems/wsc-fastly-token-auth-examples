@@ -1,12 +1,15 @@
+
 <?php
 
-class Fastly_EdgeAuth_ParameterException extends Exception {
+/**
+* This code and all components (c) Copyright 2019-2020, Wowza Media Systems, LLC. All rights reserved.
+* This code is licensed pursuant to the BSD 3-Clause License.
+*/
+
+class TokenAuth_ParameterException extends Exception {
 }
 
-/**
- * Class for handling the configuration of the token generator
- */
-class Fastly_EdgeAuth_Config {
+class TokenAuth_Config {
 	protected $ip = '';
 	protected $start_time = 0;
 	protected $lifetime = 0;
@@ -14,10 +17,7 @@ class Fastly_EdgeAuth_Config {
 	protected $stream_id = '';
 	protected $secret = '';
 
-	public function set_ip($ip) {
-		// @TODO: Validate IPV4 & IPV6 addrs
-		$this->ip = $ip;
-	}
+	public function set_ip($ip) {$this->ip = $ip;}
 	public function get_ip() {return $this->ip;}
 	public function get_ip_field() {
 		if ( strcasecmp($this->ip, '') != 0 ) {
@@ -27,20 +27,19 @@ class Fastly_EdgeAuth_Config {
 	}
 
 	public function set_start_time($start_time) {
-		// verify starttime is sane
     if ( strcasecmp($start_time, "now") == 0 ) {
         $this->start_time = time();
     } else {
-        if ( is_numeric($start_time) && $start_time > 0 && $start_time < 4294967295 ) {
-            $this->start_time = 0+$start_time; // faster than intval
+        if ( is_numeric($start_time) ) {
+            $this->start_time = 0+$start_time;
         } else {
-            throw new Fastly_EdgeAuth_ParameterException("start time input invalid or out of range");
+            throw new TokenAuth_ParameterException("start time input invalid or out of range");
         }
     }
 	}
 	public function get_start_time() {return $this->start_time;}
 	protected function get_start_time_value() {
-		if ( $this->start_time > 0 ) {
+		if ( $this->start_time ) {
 			return $this->start_time;
 		} else {
 			return time();
@@ -59,7 +58,7 @@ class Fastly_EdgeAuth_Config {
 		if ( is_numeric($lifetime) && $lifetime > 0 ) {
 			$this->lifetime = 0+$lifetime; // faster then intval
 		} else {
-			throw new Fastly_EdgeAuth_ParameterException("lifetime input invalid");
+			throw new TokenAuth_ParameterException("lifetime input invalid");
 		}
 	}
 	public function get_lifetime() {return $this->lifetime;}
@@ -69,25 +68,27 @@ class Fastly_EdgeAuth_Config {
     if ( is_numeric($end_time) && $end_time > 0 && $end_time < 4294967295 ) {
         $this->end_time = 0+$end_time; // faster than intval
     } else {
-        throw new Fastly_EdgeAuth_ParameterException("end time input invalid or out of range");
+        throw new TokenAuth_ParameterException("end time input invalid or out of range");
     }
 	}
   public function get_end_time() {return $this->end_time;}
 	public function get_expr_field() {
     //need to implement ruby logic - check if end_time is there first, otherwise use lifetime to calculate it
-    if ( $this->get_end_time() == 0 ) {
-      if( $this->get_lifetime() == 0 ) {
-        throw new Fastly_EdgeAuth_ParameterException('You must provide an expiration time --end_time or a lifetime --lifetime. See --help for further info.');
-      } else {
-        return 'exp='.($this->get_start_time_value()+$this->lifetime).'~';
-      }
-    } else {
-      if ( $this->get_end_time() <= $this->get_start_time() ){
-        throw new Fastly_EdgeAuth_ParameterException('Token start time is equal to or after expiration time.');
-      } else {
-        return 'exp='.($this->get_end_time()).'~';
-      }
-    }
+		if ( $this->get_end_time() ) {
+			if ( $this->get_start_time() && $this->get_start_time() >= $this->get_end_time() ) {
+				throw new TokenAuth_ParameterException('Token start time is equal to or after expiration time.');
+			}
+		} else {
+			if ( $this->get_lifetime() ) {
+				if ( $this->get_start_time_value() ) {
+					return 'exp='.($this->get_start_time()+$this->get_lifetime()).'~';
+				} else {
+					return 'exp='.(time()+$this->get_lifetime()).'~';
+				}
+			} else {
+				throw new TokenAuth_ParameterException('You must provide an expiration time --end_time or a lifetime --lifetime. See --help for further info.');
+			}
+		}
 	}
 
 	public function set_stream_id($stream_id) {$this->stream_id = $stream_id;}
@@ -104,21 +105,23 @@ class Fastly_EdgeAuth_Config {
 
 }
 
-class Fastly_EdgeAuth_Generate {
+class TokenAuth_Generate {
 
 	public function generate_token($config) {
-		// ASSUMES:($ip='', $start_time=null, $lifetime=0, $end_time=0, $stream_id="", $secret="")
 
     $m_token = $config->get_ip_field();
 		$m_token .= $config->get_start_time_field();
 		$m_token .= $config->get_expr_field();
     $m_token_digest = $m_token;
 		$m_token_digest .= $config->get_stream_id_field();
-		//$m_token_digest = (string)$m_token;
+
     if ( strcasecmp($config->get_secret(), '') == 0 ) {
-      throw new Fastly_EdgeAuth_ParameterException('You must provide a secret.');
+      throw new TokenAuth_ParameterException('You must provide a secret.');
     }
-		// produce the signature and append to the tokenized string
+		if ( strcasecmp($config->get_stream_id(), '') == 0 ) {
+			throw new TokenAuth_ParameterException('You must provide a stream ID.');
+		}
+
 		$signature = hash_hmac('sha256', rtrim($m_token_digest, '~'), $config->get_secret());
 		return 'hdnts='.$m_token.'hmac='.$signature;
 	}
@@ -127,49 +130,63 @@ class Fastly_EdgeAuth_Generate {
 
 // CLI Parameter Control
 if (!empty($argc) && strstr($argv[0], basename(__FILE__))) {
-	// bring in getopt and define some exit codes
 	define('NO_ARGS',10);
 	define('INVALID_OPTION',11);
-	// parse args to opts
-	$long_opts = array( 'help', 'lifetime:', 'start-time:', 'ip:', 'end-time:', 'stream-id:',
-			'secret:', 'debug',);
-	$opts = getopt('h:s:e:l:u:k:i:', $long_opts);
-	// Check the options are valid
+	$long_opts = array( 'help', 'lifetime::', 'starttime::', 'ip::', 'endtime::', 'streamid:',
+			'secret:');
+	$opts = getopt('hs::e::l::u:k:i::', $long_opts);
 
 	if (!empty($opts)) {
-		$c = new Fastly_EdgeAuth_Config();
-		$g = new Fastly_EdgeAuth_Generate();
+		$c = new TokenAuth_Config();
+		$g = new TokenAuth_Generate();
 		foreach ($opts as $o => $v) {
 			if (($o == 'help') || ($o == 'h')) {
-				//@TODO
-                print "php gen_token.php [options]\n";
-                print "ie.\n";
-                print "php gen_token.php --start:now --lifetime:86400\n";
+								print "gen_token: A short script to generate valid authentication tokens for
+Fastly stream targets in Wowza Streaming Cloud.
+
+To access to a protected stream target, requests must provide
+a parameter block generated by this script, otherwise the request
+will be blocked.
+
+Any token is tied to a specific stream id and has a limited lifetime.
+Optionally, additional parameters can be factored in, for example the
+client's IP address, or a start time denoting from when on the token is valid.
+See below for supported values. Keep in mind that the stream target
+configuration has to match these optional parameters in some cases.
+
+Examples:
+
+# Generate a token that is valid for 1 hour (3600 seconds)
+# and protects the stream id YourStreamId with a secret value of
+# demosecret123abc
+php gen_token.php -l3600 -u YourStreamId -k demosecret123abc
+hdnts=exp=1579792240~hmac=efe1cef703a1951c7e01e49257ae33487adcf80ec91db2d264130fbe0daeb7ed
+
+# Generate a token that is valid from 1578935505 to 1578935593
+# seconds after 1970-01-01 00:00 UTC (Unix epoch time)
+php gen_token.php -s1578935505 -e1578935593 -u YourStreamId -k demosecret123abc
+hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99";
                 print "\n";
-                print "-l LIFETIME_SECONDS, --lifetime=LIFETIME_SECONDS\n";
-                print "                    How long is this token valid for?\n";
-                print "-e END_TIME, --end-time=END_TIME     Token expiration in Unix Epoch seconds.\n";
-                print "                    --end_time overrides --lifetime.\n";
-                print "-u STREAM_ID, --stream_id=STREAM_ID\n";
-                print "                    STREAMID required to validate the token against.\n";
-                print "-k SECRET, --key=SECRET           Secret required to generate the token.\n";
-                print "-s START_TIME, --start-time=START_TIME       (Optional) What is the start time. (Use now for the current time)\n";
-                print "-i IP_ADDRESS, --ip=IP_ADDRESS     (Optional) IP Address to restrict this token to.\n";
+                print "-lLIFETIME_SECONDS, --lifetime=LIFETIME_SECONDS	Token expires after SECONDS. --lifetime or --end_time is mandatory.\n";
+                print "-eEND_TIME, --endtime=END_TIME	Token expiration in Unix Epoch seconds. --end_time overrides --lifetime.\n";
+                print "-u STREAM_ID, --streamid=STREAM_ID	STREAMID required to validate the token against.\n";
+                print "-k SECRET, --key=SECRET	Secret required to generate the token. Do not share this secret.\n";
+                print "-sSTART_TIME, --starttime=START_TIME	(Optional) Start time in Unix Epoch seconds. Use 'now' for the current time.\n";
+                print "-iIP_ADDRESS, --ip=IP_ADDRESS	(Optional) The token is only valid for this IP Address.\n";
+								print "-h --help	Display this help info\n";
                 exit(0);
 			} elseif (($o == 'lifetime=') || ($o == 'l')) {
 				$c->set_lifetime($v);
-			} elseif (($o == 'start-time=') || ($o == 's')) {
+			} elseif (($o == 'starttime=') || ($o == 's')) {
 				$c->set_start_time($v);
 			} elseif (($o == 'ip=') || ($o == 'i')) {
 				$c->set_ip($v);
-			} elseif (($o == 'end-time=') || ($o == 'e')) {
+			} elseif (($o == 'endtime=') || ($o == 'e')) {
 				$c->set_end_time($v);
-			} elseif (($o == 'stream-id=') || ($o == 'u')) {
+			} elseif (($o == 'streamid=') || ($o == 'u')) {
 				$c->set_stream_id($v);
 			} elseif (($o == 'secret') || ($o == 'k')) {
 				$c->set_secret($v);
-			} elseif ($o == 'debug') {
-				//@TODO
 			}
 		}
 		$token = $g->generate_token($c);
