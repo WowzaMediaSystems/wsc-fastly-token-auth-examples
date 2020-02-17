@@ -2,7 +2,7 @@
 
 ## Wowza CDN on Fastly Token Authentication
 
-This package includes code examples for use with the Wowza Streaming Cloud&trade; service that help you incorporate token authentication into your application. These examples are for Wowza CDN on Fastly stream targets only. 
+This package includes code examples for use with the Wowza Streaming Cloud&trade; service that help you incorporate token authentication into your application. The examples provided are in JavaScript, PHP, Python, and Ruby and are for Wowza CDN on Fastly stream targets only.
 
 ## Contents
 - [About token authentication](#about)
@@ -22,7 +22,7 @@ For further information on how to implement token authentication, see one of the
 * [Protect a Wowza CDN on Fastly stream target with token authentication using the Wowza Streaming Cloud REST API](https://www.wowza.com/docs/protect-a-wowza-cdn-on-fastly-stream-target-with-token-authentication-using-the-wowza-streaming-cloud-rest-api)
 * [Protect a Wowza CDN on Fastly stream target with token authentication in Wowza Streaming Cloud](https://www.wowza.com/docs/protect-a-wowza-cdn-on-fastly-stream-target-with-token-authentication-in-wowza-streaming-cloud)
 
-The contents of this package include a Ruby implementation that contains a command-line application. The output is a string that includes some of the options and the generated HMAC value. This string is a valid query string name/value pair and should be added to the playlist URL of the protected stream.
+Each implementation in this package contains a command-line application. The output is a string that includes some of the options and the generated HMAC value. This string is a valid query string name/value pair and should be added to the playlist URL of the protected stream.
 
 ## Options 
 
