@@ -117,11 +117,11 @@ if __name__ == '__main__':
   '# Generate a token that is valid for 1 hour (3600 seconds)\n'\
   '# and protects the stream id YourStreamId with a secret value of\n'\
   '# demosecret123abc\n'\
-  './gen_token.rb -l 3600 -u YourStreamId -k demosecret123abc\n'\
+  './gen_token.py -l 3600 -u YourStreamId -k demosecret123abc\n'\
   'hdnts=exp=1579792240~hmac=efe1cef703a1951c7e01e49257ae33487adcf80ec91db2d264130fbe0daeb7ed\n\n'\
   '# Generate a token that is valid from 1578935505 to 1578935593\n'\
   '# seconds after 1970-01-01 00:00 UTC (Unix epoch time)\n'\
-  './gen_token.rb -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc\n'\
+  './gen_token.py -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc\n'\
   'hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'
     parser = optparse.OptionParser(usage=usage, version=APP_VERSION)
     parser.add_option(
