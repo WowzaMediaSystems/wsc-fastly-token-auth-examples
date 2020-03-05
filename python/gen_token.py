@@ -100,7 +100,7 @@ class Token:
             hash_source,
             getattr(hashlib, 'sha256')).hexdigest()
 
-        return 'hdnts=%shmac=%s' % (new_token, token_hmac)
+        return 'hdnts=%s~hmac=%s' % (new_token, token_hmac)
 
 if __name__ == '__main__':
     usage = 'gen_token: A short script to generate valid authentication tokens for\n'\
