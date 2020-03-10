@@ -34,7 +34,7 @@ Each implementation in this package contains a command-line application. The out
 | -k, --key KEY               | (required) The token_auth_shared_secret value from Wowza Streaming Cloud required to generate the token.                                                                                                                                                                                             |
 | -l, --lifetime SECONDS      | The length of time that the token is valid for, in seconds. Required if end_time isn't specified.                                                                                                                                                                                                    |
 | -s, --start_time START_TIME | The time that protected access to the stream begins, in UTC seconds. For example, 1478908800 for 12 November 2016 00:00:00 GMT. Use now for the current time.                                                                                                                                        |
-| -u, --stream_id STREAMID    | (required) The stream ID from the Wowza Streaming Cloud playback URL, which is the playback_url of the Wowza CDN on Fastly stream target. Using this example, https://[subdomain].wowza.com/1/[stream_id]/[stream_name]/hls/live/playlist.m3u8, the value would be [stream_id]. |
+| -u, --stream_id STREAMID    | (required) The stream ID from the Fastly stream target playback_url. Examples:<br />https://[subdomain].wowza.com/1/[stream_id]/[stream_name]/hls/live/playlist.m3u8<br /> For https://[subdomain].wowza.com/1/NUtjdHdsc3g4Z21L/00000ETFlNKkeNpL/hls/live/playlist.m3u8, the stream ID would be NUtjdHdsc3g4Z21L. |
 
 
 ## Examples
