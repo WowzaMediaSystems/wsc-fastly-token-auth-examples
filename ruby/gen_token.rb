@@ -64,7 +64,7 @@ parser = OptionParser.new do |parser|
     params[:start_time] = st == 'now' ? Time.new.getgm : st
   end
 
-  params[:ip_address] = nil
+  params[:ip] = nil
   parser.on('-i', '--ip IP_ADDRESS', '(Optional) The token is only valid for this IP Address.') do |ip_address|
     params[:ip] = ip_address
   end
