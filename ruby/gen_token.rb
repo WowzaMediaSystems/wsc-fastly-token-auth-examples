@@ -69,9 +69,9 @@ parser = OptionParser.new do |parser|
     params[:ip] = ip_address
   end
 
-  params[:vod_stream_id] = nil
+  params[:vod] = nil
   parser.on('-v', '--vod VOD_STREAM_ID', '(Optional) The token is only valid for this VOD stream.') do |vod_stream_id|
-    params[:vod_stream_id] = vod_stream_id
+    params[:vod] = vod_stream_id
   end
 
   parser.on('-h', '--help', 'Display this help info') do
@@ -105,6 +105,7 @@ else
 end
 
 parts = Array.new
+parts << 'vod=%s' % params[:vod] unless params[:vod].nil?
 parts << 'ip=%s' % params[:ip] unless params[:ip].nil?
 parts << 'st=%s' % params[:start_time] unless params[:start_time].nil?
 parts << 'exp=%s' % params[:end_time]
