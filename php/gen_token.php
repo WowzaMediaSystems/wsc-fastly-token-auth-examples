@@ -10,6 +10,7 @@ class TokenAuth_ParameterException extends Exception {
 }
 
 class TokenAuth_Config {
+	protected $vod_stream_id = '';
 	protected $ip = '';
 	protected $start_time = 0;
 	protected $lifetime = 0;
@@ -100,6 +101,15 @@ class TokenAuth_Config {
 		return "";
 	}
 
+	public function set_vod_stream_id($vod_stream_id) {$this->vod_stream_id = $vod_stream_id;}
+	public function get_vod_stream_id() {return $this->vod_stream_id;}
+	public function get_vod_stream_id_field() {
+		if ($this->vod_stream_id) {
+			return 'vod_stream_id='.$this->vod_stream_id.'~';
+		}
+		return "";
+	}
+
 	public function set_secret($secret) {$this->secret = $secret;}
 	public function get_secret() {return $this->secret;}
 
@@ -109,7 +119,8 @@ class TokenAuth_Generate {
 
 	public function generate_token($config) {
 
-    $m_token = $config->get_ip_field();
+    $m_token = $config->get_vod_stream_id_field();
+    $m_token .= $config->get_ip_field();
 		$m_token .= $config->get_start_time_field();
 		$m_token .= $config->get_expr_field();
     $m_token_digest = $m_token;
@@ -133,8 +144,8 @@ if (!empty($argc) && strstr($argv[0], basename(__FILE__))) {
 	define('NO_ARGS',10);
 	define('INVALID_OPTION',11);
 	$long_opts = array( 'help', 'lifetime::', 'starttime::', 'ip::', 'endtime::', 'streamid:',
-			'secret:');
-	$opts = getopt('hs::e::l::u:k:i::', $long_opts);
+			'secret:', "vodstreamid");
+	$opts = getopt('hs::e::l::u:k:i::v::', $long_opts);
 
 	if (!empty($opts)) {
 		$c = new TokenAuth_Config();
@@ -185,6 +196,8 @@ hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b
 				$c->set_end_time($v);
 			} elseif (($o == 'streamid=') || ($o == 'u')) {
 				$c->set_stream_id($v);
+			} elseif (($o == 'vodstreamid=') || ($o == 'v')) {
+				$c->set_vod_stream_id($v);
 			} elseif (($o == 'secret') || ($o == 'k')) {
 				$c->set_secret($v);
 			}
