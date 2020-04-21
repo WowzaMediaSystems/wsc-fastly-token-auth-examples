@@ -166,8 +166,7 @@ if __name__ == '__main__':
             options.end_time,
             options.lifetime,
             options.secret,
-            options.stream_id
-            options.vod_stream_id)
+            options.stream_id)
 
         new_token = generator.generateToken()
         print('%s' % new_token)
