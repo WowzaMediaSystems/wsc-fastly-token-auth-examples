@@ -61,7 +61,7 @@ class TokenAuth {
         var newToken = []
 
         if (this.options.vodStreamId) {
-            newToken.push("vod_stream_id=" + this.options.vodStreamId)
+            newToken.push("vod=" + this.options.vodStreamId)
         }
 
         if (this.options.ip) {
@@ -138,7 +138,7 @@ var ea = new TokenAuth({
 	endTime: program.end_time,
 	lifetimeSeconds: program.lifetime,
 	ip: program.ip,
-	streamId: program.stream_id
+	streamId: program.stream_id,
   vodStreamId: program.vod_stream_id
 })
 
