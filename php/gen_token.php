@@ -18,6 +18,15 @@ class TokenAuth_Config {
 	protected $stream_id = '';
 	protected $secret = '';
 
+	public function set_vod_stream_id($vod_stream_id) {$this->vod_stream_id = $vod_stream_id;}
+	public function get_vod_stream_id() {return $this->vod_stream_id;}
+	public function get_vod_stream_id_field() {
+		if ( strcasecmp($this->vod_stream_id, '') != 0 ) {
+			return 'vod='.$this->vod_stream_id.'~';
+		}
+		return "";
+	}
+
 	public function set_ip($ip) {$this->ip = $ip;}
 	public function get_ip() {return $this->ip;}
 	public function get_ip_field() {
@@ -101,15 +110,6 @@ class TokenAuth_Config {
 		return "";
 	}
 
-	public function set_vod_stream_id($vod_stream_id) {$this->vod_stream_id = $vod_stream_id;}
-	public function get_vod_stream_id() {return $this->vod_stream_id;}
-	public function get_vod_stream_id_field() {
-		if ($this->vod_stream_id) {
-			return 'vod_stream_id='.$this->vod_stream_id.'~';
-		}
-		return "";
-	}
-
 	public function set_secret($secret) {$this->secret = $secret;}
 	public function get_secret() {return $this->secret;}
 
@@ -144,7 +144,7 @@ if (!empty($argc) && strstr($argv[0], basename(__FILE__))) {
 	define('NO_ARGS',10);
 	define('INVALID_OPTION',11);
 	$long_opts = array( 'help', 'lifetime::', 'starttime::', 'ip::', 'endtime::', 'streamid:',
-			'secret:', "vodstreamid");
+			'secret:', "vodstreamid::");
 	$opts = getopt('hs::e::l::u:k:i::v::', $long_opts);
 
 	if (!empty($opts)) {
@@ -181,6 +181,7 @@ hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b
                 print "-lLIFETIME_SECONDS, --lifetime=LIFETIME_SECONDS	Token expires after SECONDS. --lifetime or --end_time is mandatory.\n";
                 print "-eEND_TIME, --endtime=END_TIME	Token expiration in Unix Epoch seconds. --end_time overrides --lifetime.\n";
                 print "-u STREAM_ID, --streamid=STREAM_ID	STREAMID required to validate the token against.\n";
+                print "-v VOD_STREAM_ID, --vodstreamid=VOD_STREAM_ID	VODSTREAMID required to validate the token against.\n";
                 print "-k SECRET, --key=SECRET	Secret required to generate the token. Do not share this secret.\n";
                 print "-sSTART_TIME, --starttime=START_TIME	(Optional) Start time in Unix Epoch seconds. Use 'now' for the current time.\n";
                 print "-iIP_ADDRESS, --ip=IP_ADDRESS	(Optional) The token is only valid for this IP Address.\n";
