@@ -181,7 +181,7 @@ hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b
 # Generate a token that is valid from 1578935505 to 1578935593
 # seconds after 1970-01-01 00:00 UTC (Unix epoch time)
 # with VOD_STREAM_ID = YOURVOD
-php gen_token.php -s1578935505 -e1578935593 -u YourStreamId -k demosecret123abc -v YourVOD
+php gen_token.php -s1578935505 -e1578935593 -u YourStreamId -k demosecret123abc -vYourVOD
 hdnts=vod=YourVOD~st=1578935505~exp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8";
                 print "\n";
                 print "-lLIFETIME_SECONDS, --lifetime=LIFETIME_SECONDS	Token expires after SECONDS. --lifetime or --end_time is mandatory.\n";
