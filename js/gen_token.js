@@ -101,6 +101,7 @@ program
   .option('-k, --key [value]', 'Secret required to generate the token. Do not share this secret.')
   .option('-s, --start_time [value]', "(Optional) Start time in Unix Epoch seconds. Use 'now' for the current time.")
   .option('-i, --ip [value]', '(Optional) The token is only valid for this IP Address.')
+  .option('-v, --vod_stream_id [value]', '(Optional) The token is only valid for this VOD stream.')
 
   program.on('--help', function(){
     console.log('')
