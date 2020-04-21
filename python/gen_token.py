@@ -127,6 +127,11 @@ if __name__ == '__main__':
   '# Generate a token that is valid from 1578935505 to 1578935593\n'\
   '# seconds after 1970-01-01 00:00 UTC (Unix epoch time)\n'\
   './gen_token.py -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc\n'\
+  'hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'\
+  '# Generate a token that is valid from 1578935505 to 1578935593\n'\
+  '# seconds after 1970-01-01 00:00 UTC (Unix epoch time)\n'\
+  '# and with vod_stream_id = YourVOD\n'\
+  './gen_token.py -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD\n'\
   'hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'
     parser = optparse.OptionParser(usage=usage, version=APP_VERSION)
     parser.add_option(
