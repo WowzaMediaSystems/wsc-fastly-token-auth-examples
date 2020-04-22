@@ -189,7 +189,7 @@ hdnts=vod=YourVOD~st=1578935505~exp=1578935593~hmac=722d989e175ac0c288603e44d552
                 print "-lLIFETIME_SECONDS, --lifetime=LIFETIME_SECONDS	Token expires after SECONDS. --lifetime or --end_time is mandatory.\n";
                 print "-eEND_TIME, --endtime=END_TIME	Token expiration in Unix Epoch seconds. --end_time overrides --lifetime.\n";
                 print "-u STREAM_ID, --streamid=STREAM_ID	STREAMID required to validate the token against.\n";
-                print "-v VOD_STREAM_ID, --vodstreamid=VOD_STREAM_ID	VODSTREAMID required to validate the token against.\n";
+                print "-vVOD_STREAM_ID, --vodstreamid=VOD_STREAM_ID	VODSTREAMID required to validate the token against.\n";
                 print "-k SECRET, --key=SECRET	Secret required to generate the token. Do not share this secret.\n";
                 print "-sSTART_TIME, --starttime=START_TIME	(Optional) Start time in Unix Epoch seconds. Use 'now' for the current time.\n";
                 print "-iIP_ADDRESS, --ip=IP_ADDRESS	(Optional) The token is only valid for this IP Address.\n";
