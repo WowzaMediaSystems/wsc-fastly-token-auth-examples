@@ -85,13 +85,15 @@ class TokenAuth_Config {
 	public function get_expr_field() {
     //need to implement ruby logic - check if end_time is there first, otherwise use lifetime to calculate it
 		if ( $this->get_end_time() ) {
-			if ( $this->get_start_time() && $this->get_start_time() >= $this->get_end_time() ) {
+			if ( $this->get_start_time() && ($this->get_start_time() >= $this->get_end_time()) ) {
 				throw new TokenAuth_ParameterException('Token start time is equal to or after expiration time.');
+			} else {
+				return 'exp='.$this->get_end_time().'~';
 			}
 		} else {
 			if ( $this->get_lifetime() ) {
 				if ( $this->get_start_time_value() ) {
-					return 'exp='.($this->get_start_time()+$this->get_lifetime()).'~';
+					return 'exp='.($this->get_start_time_value()+$this->get_lifetime()).'~';
 				} else {
 					return 'exp='.(time()+$this->get_lifetime()).'~';
 				}
