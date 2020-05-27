@@ -60,6 +60,10 @@ class TokenAuth {
         var hashSource = []
         var newToken = []
 
+        if (this.options.vodStreamId) {
+            newToken.push("vod=" + this.options.vodStreamId)
+        }
+
         if (this.options.ip) {
             newToken.push("ip=" + this.options.ip)
         }
@@ -97,6 +101,7 @@ program
   .option('-k, --key [value]', 'Secret required to generate the token. Do not share this secret.')
   .option('-s, --start_time [value]', "(Optional) Start time in Unix Epoch seconds. Use 'now' for the current time.")
   .option('-i, --ip [value]', '(Optional) The token is only valid for this IP Address.')
+  .option('-v, --vod_stream_id [value]', '(Optional) The token is only valid for this VOD stream.')
 
   program.on('--help', function(){
     console.log('')
@@ -125,6 +130,11 @@ program
     console.log('# seconds after 1970-01-01 00:00 UTC (Unix epoch time)')
     console.log('node gen_token.js -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc')
     console.log('hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99')
+    console.log('# Generate a token that is valid from 1578935505 to 1578935593')
+    console.log('# seconds after 1970-01-01 00:00 UTC (Unix epoch time)')
+    console.log('# with vod_stream_id = YourVOD')
+    console.log('node gen_token.js -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD')
+    console.log('hdnts=vod=testingvodparam~st=1578935505~exp=1578935593~hmac=ff95ed53adc5318d57633c87f4369611b6283fe35d67070710365fea914de2e4')
   })
 	.parse(process.argv);
 
@@ -134,7 +144,8 @@ var ea = new TokenAuth({
 	endTime: program.end_time,
 	lifetimeSeconds: program.lifetime,
 	ip: program.ip,
-	streamId: program.stream_id
+	streamId: program.stream_id,
+  vodStreamId: program.vod_stream_id
 })
 
 

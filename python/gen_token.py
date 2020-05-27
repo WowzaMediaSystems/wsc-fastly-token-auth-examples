@@ -24,6 +24,7 @@ class TokenError(Exception):
 
 class TokenConfig:
     def __init__(self):
+        self.vod_stream_id = ''
         self.ip = ''
         self.start_time = None
         self.end_time = None
@@ -32,8 +33,9 @@ class TokenConfig:
         self.stream_id = ''
 
 class Token:
-    def __init__(self, ip=None, start_time=None, end_time=None,
+    def __init__(self, vod_stream_id=None, ip=None, start_time=None, end_time=None,
             lifetime=None, secret=None, stream_id=None):
+        self._vod_stream_id = vod_stream_id
         self._ip = ip
         self._start_time = start_time
         self._end_time = end_time
@@ -84,6 +86,9 @@ class Token:
 
         hash_source = ''
         new_token = ''
+        if self._vod_stream_id is not None:
+            new_token += 'vod=%s~' % (self._vod_stream_id)
+
         if self._ip is not None:
             new_token += 'ip=%s~' % (self._ip)
 
@@ -122,6 +127,11 @@ if __name__ == '__main__':
   '# Generate a token that is valid from 1578935505 to 1578935593\n'\
   '# seconds after 1970-01-01 00:00 UTC (Unix epoch time)\n'\
   './gen_token.py -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc\n'\
+  'hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'\
+  '# Generate a token that is valid from 1578935505 to 1578935593\n'\
+  '# seconds after 1970-01-01 00:00 UTC (Unix epoch time)\n'\
+  '# and with vod_stream_id = YourVOD\n'\
+  './gen_token.py -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD\n'\
   'hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'
     parser = optparse.OptionParser(usage=usage, version=APP_VERSION)
     parser.add_option(
@@ -148,9 +158,14 @@ if __name__ == '__main__':
         '-i', '--ip',
         action='store', type='string', dest='ip_address',
         help='(Optional) The token is only valid for this IP Address.')
+    parser.add_option(
+        '-v', '--vod',
+        action='store', type='string', dest='vod_stream_id',
+        help='(Optional) The token is only valid for this VOD Stream.')
     (options, args) = parser.parse_args()
     try:
         generator = Token(
+            options.vod_stream_id,
             options.ip_address,
             options.start_time,
             options.end_time,

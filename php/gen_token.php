@@ -10,12 +10,22 @@ class TokenAuth_ParameterException extends Exception {
 }
 
 class TokenAuth_Config {
+	protected $vod_stream_id = '';
 	protected $ip = '';
 	protected $start_time = 0;
 	protected $lifetime = 0;
 	protected $end_time = 0;
 	protected $stream_id = '';
 	protected $secret = '';
+
+	public function set_vod_stream_id($vod_stream_id) {$this->vod_stream_id = $vod_stream_id;}
+	public function get_vod_stream_id() {return $this->vod_stream_id;}
+	public function get_vod_stream_id_field() {
+		if ( strcasecmp($this->vod_stream_id, '') != 0 ) {
+			return 'vod='.$this->vod_stream_id.'~';
+		}
+		return "";
+	}
 
 	public function set_ip($ip) {$this->ip = $ip;}
 	public function get_ip() {return $this->ip;}
@@ -75,13 +85,15 @@ class TokenAuth_Config {
 	public function get_expr_field() {
     //need to implement ruby logic - check if end_time is there first, otherwise use lifetime to calculate it
 		if ( $this->get_end_time() ) {
-			if ( $this->get_start_time() && $this->get_start_time() >= $this->get_end_time() ) {
+			if ( $this->get_start_time() && ($this->get_start_time() >= $this->get_end_time()) ) {
 				throw new TokenAuth_ParameterException('Token start time is equal to or after expiration time.');
+			} else {
+				return 'exp='.$this->get_end_time().'~';
 			}
 		} else {
 			if ( $this->get_lifetime() ) {
 				if ( $this->get_start_time_value() ) {
-					return 'exp='.($this->get_start_time()+$this->get_lifetime()).'~';
+					return 'exp='.($this->get_start_time_value()+$this->get_lifetime()).'~';
 				} else {
 					return 'exp='.(time()+$this->get_lifetime()).'~';
 				}
@@ -109,7 +121,8 @@ class TokenAuth_Generate {
 
 	public function generate_token($config) {
 
-    $m_token = $config->get_ip_field();
+    $m_token = $config->get_vod_stream_id_field();
+    $m_token .= $config->get_ip_field();
 		$m_token .= $config->get_start_time_field();
 		$m_token .= $config->get_expr_field();
     $m_token_digest = $m_token;
@@ -133,8 +146,8 @@ if (!empty($argc) && strstr($argv[0], basename(__FILE__))) {
 	define('NO_ARGS',10);
 	define('INVALID_OPTION',11);
 	$long_opts = array( 'help', 'lifetime::', 'starttime::', 'ip::', 'endtime::', 'streamid:',
-			'secret:');
-	$opts = getopt('hs::e::l::u:k:i::', $long_opts);
+			'secret:', "vodstreamid::");
+	$opts = getopt('hs::e::l::u:k:i::v::', $long_opts);
 
 	if (!empty($opts)) {
 		$c = new TokenAuth_Config();
@@ -165,11 +178,18 @@ hdnts=exp=1579792240~hmac=efe1cef703a1951c7e01e49257ae33487adcf80ec91db2d264130f
 # Generate a token that is valid from 1578935505 to 1578935593
 # seconds after 1970-01-01 00:00 UTC (Unix epoch time)
 php gen_token.php -s1578935505 -e1578935593 -u YourStreamId -k demosecret123abc
-hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99";
+hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99
+
+# Generate a token that is valid from 1578935505 to 1578935593
+# seconds after 1970-01-01 00:00 UTC (Unix epoch time)
+# with VOD_STREAM_ID = YOURVOD
+php gen_token.php -s1578935505 -e1578935593 -u YourStreamId -k demosecret123abc -vYourVOD
+hdnts=vod=YourVOD~st=1578935505~exp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8";
                 print "\n";
                 print "-lLIFETIME_SECONDS, --lifetime=LIFETIME_SECONDS	Token expires after SECONDS. --lifetime or --end_time is mandatory.\n";
                 print "-eEND_TIME, --endtime=END_TIME	Token expiration in Unix Epoch seconds. --end_time overrides --lifetime.\n";
                 print "-u STREAM_ID, --streamid=STREAM_ID	STREAMID required to validate the token against.\n";
+                print "-vVOD_STREAM_ID, --vodstreamid=VOD_STREAM_ID	VODSTREAMID required to validate the token against.\n";
                 print "-k SECRET, --key=SECRET	Secret required to generate the token. Do not share this secret.\n";
                 print "-sSTART_TIME, --starttime=START_TIME	(Optional) Start time in Unix Epoch seconds. Use 'now' for the current time.\n";
                 print "-iIP_ADDRESS, --ip=IP_ADDRESS	(Optional) The token is only valid for this IP Address.\n";
@@ -185,6 +205,8 @@ hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b
 				$c->set_end_time($v);
 			} elseif (($o == 'streamid=') || ($o == 'u')) {
 				$c->set_stream_id($v);
+			} elseif (($o == 'vodstreamid=') || ($o == 'v')) {
+				$c->set_vod_stream_id($v);
 			} elseif (($o == 'secret') || ($o == 'k')) {
 				$c->set_secret($v);
 			}
