@@ -39,9 +39,9 @@ parser = OptionParser.new do |parser|
 
   # Generate a token that is valid from 1578935505 to 1578935593
   # seconds after 1970-01-01 00:00 UTC (Unix epoch time)
-  # and vod_stream_id = YourVOD
+  # and vod_stream_id = YourVOD1
   ./gen_token.rb -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD1
-  hdnts=st=1578935505~vod=YourVODexp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8
+  hdnts=st=1578935505~vod=YourVOD1~exp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8
   )
 
   params[:lifetime] = nil
