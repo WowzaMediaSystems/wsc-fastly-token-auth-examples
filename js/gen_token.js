@@ -60,9 +60,6 @@ class TokenAuth {
         var hashSource = []
         var newToken = []
 
-        if (this.options.vodStreamId) {
-            newToken.push("vod=" + this.options.vodStreamId)
-        }
 
         if (this.options.ip) {
             newToken.push("ip=" + this.options.ip)
@@ -71,6 +68,11 @@ class TokenAuth {
         if (this.options.startTime) {
             newToken.push("st=" + startTime)
         }
+
+        if (this.options.vodStreamId) {
+          newToken.push("vod=" + this.options.vodStreamId)
+        }
+
         newToken.push("exp=" + endTime)
 
         hashSource = newToken.slice()
@@ -132,9 +134,9 @@ program
     console.log('hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99')
     console.log('# Generate a token that is valid from 1578935505 to 1578935593')
     console.log('# seconds after 1970-01-01 00:00 UTC (Unix epoch time)')
-    console.log('# with vod_stream_id = YourVOD')
-    console.log('node gen_token.js -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD')
-    console.log('hdnts=vod=testingvodparam~st=1578935505~exp=1578935593~hmac=ff95ed53adc5318d57633c87f4369611b6283fe35d67070710365fea914de2e4')
+    console.log('# with vod_stream_id = YourVOD1')
+    console.log('node gen_token.js -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD1')
+    console.log('hdnts=st=1578935505~vod=YourVOD1~exp=1578935593~hmac=ff95ed53adc5318d57633c87f4369611b6283fe35d67070710365fea914de2e4')
   })
 	.parse(process.argv);
 
