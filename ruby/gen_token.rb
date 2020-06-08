@@ -40,8 +40,8 @@ parser = OptionParser.new do |parser|
   # Generate a token that is valid from 1578935505 to 1578935593
   # seconds after 1970-01-01 00:00 UTC (Unix epoch time)
   # and vod_stream_id = YourVOD
-  ./gen_token.rb -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD
-  hdnts=vod=YourVOD~st=1578935505~exp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8
+  ./gen_token.rb -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD1
+  hdnts=st=1578935505~vod=YourVODexp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8
   )
 
   params[:lifetime] = nil
@@ -110,9 +110,9 @@ else
 end
 
 parts = Array.new
-parts << 'vod=%s' % params[:vod_stream_id] unless params[:vod_stream_id].nil?
 parts << 'ip=%s' % params[:ip] unless params[:ip].nil?
 parts << 'st=%s' % params[:start_time] unless params[:start_time].nil?
+parts << 'vod=%s' % params[:vod_stream_id] unless params[:vod_stream_id].nil?
 parts << 'exp=%s' % params[:end_time]
 public_parts = parts.join('~')
 
