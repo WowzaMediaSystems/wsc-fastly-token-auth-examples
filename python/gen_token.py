@@ -86,14 +86,15 @@ class Token:
 
         hash_source = ''
         new_token = ''
-        if self._vod_stream_id is not None:
-            new_token += 'vod=%s~' % (self._vod_stream_id)
 
         if self._ip is not None:
             new_token += 'ip=%s~' % (self._ip)
 
         if self._start_time is not None:
             new_token += 'st=%d~' % (self._start_time)
+
+        if self._vod_stream_id is not None:
+            new_token += 'vod=%s~' % (self._vod_stream_id)
 
         new_token += 'exp=%d' % (self._end_time)
 
@@ -130,9 +131,9 @@ if __name__ == '__main__':
   'hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'\
   '# Generate a token that is valid from 1578935505 to 1578935593\n'\
   '# seconds after 1970-01-01 00:00 UTC (Unix epoch time)\n'\
-  '# and with vod_stream_id = YourVOD\n'\
-  './gen_token.py -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD\n'\
-  'hdnts=st=1578935505~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'
+  '# and with vod_stream_id = YourVOD1\n'\
+  './gen_token.py -s 1578935505 -e 1578935593 -u YourStreamId -k demosecret123abc -v YourVOD1\n'\
+  'hdnts=st=1578935505~vod=YourVOD1~exp=1578935593~hmac=aaf01da130e5554eeb74159e9794c58748bc9f6b5706593775011964612b6d99\n'
     parser = optparse.OptionParser(usage=usage, version=APP_VERSION)
     parser.add_option(
         '-l', '--lifetime',

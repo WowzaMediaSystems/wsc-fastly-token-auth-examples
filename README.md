@@ -25,6 +25,7 @@ For further information on how to implement token authentication, see one of the
 Each implementation in this package contains a command-line application. The output is a string that includes some of the options and the generated HMAC value. This string is a valid query string name/value pair and should be added to the playlist URL of the protected stream.
 
 ## Options 
+**Note**: The generated query parameters must be in the following order: IP_ADDRESS, START_TIME, VODSTREAMID, END_TIME
 
 | Option                          | Description                                                                                                                                                                                                                                                                                          |
 |---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -58,7 +59,7 @@ $ ruby ./gen_token.rb -e 1578935593 -u NUtjdHdsc3g4Z21L -s 1578935505 -k 8a123c7
 
 Result:
 ```ruby
-hdnts=vod=rqcbmfjl~st=1578935505~exp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8
+hdnts=st=1578935505~vod=rqcbmfjl~exp=1578935593~hmac=722d989e175ac0c288603e44d552ab5d11cb1b86077657ee867adcfded7cb0f8
 ```
 
 Generate a token that is valid for a specific number of seconds:
