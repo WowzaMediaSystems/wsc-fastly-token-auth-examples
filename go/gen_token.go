@@ -77,7 +77,7 @@ func (t *TokenOption) payload() string {
 }
 
 type TokenGenerator interface {
-	Generate(option TokenOption) (string, error)
+	Generate() (string, error)
 }
 
 type TokenGeneratorImpl struct {
