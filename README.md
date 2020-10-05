@@ -77,8 +77,8 @@ hdnts=exp=1578424041~hmac=0428782df32a8a8b91823889756d8084997cf45c58375d526dc985
 
 Wowza Media Systems™, LLC
 
-Wowza Media Systems provides developers with a platform to create streaming applications and solutions. See the [Wowza Developer Portal](https://www.wowza.com/resources/developers) to learn more about our APIs and SDKs.
+Wowza Media Systems provides developers with a platform to create streaming applications and solutions. See the [Wowza Developer Portal](https://www.wowza.com/developer) to learn more about our APIs and SDKs.
 
 ## License
 
-This code is distributed under the [BSD 3-Clause License](https://github.com/WowzaMediaSystems/wsc-fastly-token-auth-examples/blob/master/LICENSE.txt).
+This code is distributed under the [BSD 3-Clause License](/LICENSE.txt).
